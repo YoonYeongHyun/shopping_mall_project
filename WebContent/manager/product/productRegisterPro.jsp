@@ -4,15 +4,9 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>상품 등록 처리 페이지</title>
 </head>
 <body>
-<%
-	session.removeAttribute("managerId");
-%>
-<script>
-	alert("로그아웃 되었습니다.")
-	location="managerLoginForm.jsp"
-</script>
+
 </body>
 </html>
