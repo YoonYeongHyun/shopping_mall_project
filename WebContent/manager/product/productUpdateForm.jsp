@@ -1,10 +1,12 @@
+<%@page import="manager.product.ProductDTO"%>
+<%@page import="manager.product.ProductDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>상품 등록 페이지</title>
+<title>Insert title here</title>
 <style>
 	#container{width:1000px; margin:0 auto;}
 	@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Do+Hyeon&family=Nanum+Gothic:wght@700&display=swap');
@@ -40,53 +42,17 @@
 	.form_btns input{width:100px; height:40px; border:none; background:black; font-size: 1em; font-weight: bold; color:white; cursor: pointer;}
 	.form_btns input:hover {background:black; color:white;}
 </style>
-<script>
-	<%
-	String managerId = (String) session.getAttribute("managerId");
-	if (managerId == null) { //세션이 null인 경우
-		%>alert('로그인 하십시오.'); location='../logon/managerLoginForm.jsp';<%
-	}
-	%>
-	document.addEventListener("DOMContentLoaded", function(){
-		let form = document.registerForm;
-		let btn_register = document.getElementById("btn_register");
-		
-		btn_register.addEventListener("click", function(){
-			
-			if(!form.product_name.value){
-				alert("상품명을 입력하세요.");
-				return;
-			}
-			if(!form.product_price.value){
-				alert("소비자가격을 입력하세요.");
-				return;
-			}
-			if(!form.product_sale_price.value){
-				alert("판매가격을 입력하세요.");
-				return;
-			}
-			if(!form.product_qty.value){
-				alert("상품수량을 입력하세요.");
-				return;
-			}
-			if(!form.product_brand.value){
-				alert("제조사를 입력하세요.");
-				return;
-			}
-			if(!form.product_content.value){
-				alert("제품내용을 입력하세요.");
-				return;
-			}
-			form.submit();
-		})
-	});
-	function onDateChange(event){
-		 let product_expiry_date = document.getElementById("product_expiry_date");
-		console.log(product_expiry_date.value);
-	}
-</script>
 </head>
 <body>
+<%
+	request.setCharacterEncoding("utf-8");
+	int product_id = Integer.parseInt(request.getParameter("product_id"));
+	System.out.println(product_id);
+	ProductDAO productDAO = ProductDAO.getInstance();
+	ProductDTO product = productDAO.getProduct(product_id);
+	
+
+%>
 <div id="container">
 	<div class="m_title"><a href="#">MALL</a></div>
 	<h2>쇼핑몰 관리자 페이지</h2>
@@ -125,31 +91,31 @@
 				</tr> 
 				<tr>
 					<th>상품명</th>
-					<td><input type="text" name="product_name" id="product_name" ></td>
+					<td><input type="text" name="product_name" id="product_name" value="<%=product.getProduct_name() %>" ></td>
 				</tr>
 				<tr>
 					<th>소비자가격</th>
-					<td><input type="number" class="short_input" name="product_price"></td>
+					<td><input type="number" class="short_input" name="product_price" value="<%=product.getProduct_price() %>"></td>
 				</tr> 
 				<tr>
 					<th>판매가격</th>
-					<td><input type="number" class="short_input" name="product_sale_price" id="product_sale_price"></td>
+					<td><input type="number" class="short_input" name="product_sale_price" id="product_sale_price" value="<%=product.getProduct_sale_price() %>"></td>
 				</tr>
 				<tr>
 					<th>상품수량</th>
-					<td><input type="number" class="short_input" name="product_qty" ></td>
+					<td><input type="number" class="short_input" name="product_qty" value="<%=product.getProduct_qty() %>" ></td>
 				</tr> 
 				<tr>
 					<th>제조사</th>
-					<td><input type="text" class="short_input" name="product_brand" ></td>
+					<td><input type="text" class="short_input" name="product_brand" value="<%=product.getProduct_brand() %>"></td>
 				</tr>
 				<tr>
 					<th>판매만료 날짜</th>
-					<td><input type="date" name="product_expiry_date" id="product_expiry_date" onChange="onDateChange(event)" ></td>
+					<td><input type="date" name="product_expiry_date" id="product_expiry_date" onChange="onDateChange(event)"></td>
 				</tr>
 				<tr>
 					<th>내용</th>
-					<td><textarea rows="10" cols="60" name="product_content" ></textarea></td>
+					<td><textarea rows="10" cols="60" name="product_content"><%=product.getProduct_content()%></textarea></td>
 				</tr>
 				<tr>
 					<th>이미지</th>
@@ -157,7 +123,7 @@
 				</tr>
 			</table>
 			<div class="form_btns">
-				<input type="button" value="등록" id="btn_register">
+				<input type="button" value="수정" id="btn_update">
 				<input type="reset"  value="초기화">
 			</div>
 		</form>

@@ -20,25 +20,23 @@
 	.top_menu th a:hover {color:white}
 	.top_menu th a {display: block; height: 100%; text-decoration: none; color:black; line-height: 60px;font-size: 1.2em}
 </style>
-<script>
-	<%
-	String managerId = (String) session.getAttribute("managerId");
-	if (managerId == null) { //세션이 null인 경우
-		%>alert('로그인 하세요'); location='logon/managerLoginForm.jsp';<%
-	}
-	%>
-</script>
 </head>
 <body>
+
+<%
+String managerId = (String) session.getAttribute("managerId");
+if (managerId == null) { //세션이 null인 경우
+	%><script>alert('로그인 하세요'); location='logon/managerLoginForm.jsp';</script><%
+}
+%>
 <div id="container">
-	<h2>쇼핑몰 관리자 페이지</h2>
 	<div class="m_title"><a href="#">MALL</a></div>
 	<h2>쇼핑몰 관리자 페이지</h2>
 	
 	<table class="top_menu">
 		<tr>
+			<th><a href="product/productManagement.jsp">상품 관리</a></th>
 			<th><a href="product/productRegisterForm.jsp">상품 등록</a></th>
-			<th><a href="@">상품 관리</a></th>
 			<th><a href="@">주문 관리</a></th>
 			<th><a href="@">회원 관리</a></th>
 			<th><a href="logon/managerLogout.jsp">로그아웃</a></th>
