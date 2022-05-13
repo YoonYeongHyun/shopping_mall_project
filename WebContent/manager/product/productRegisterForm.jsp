@@ -80,10 +80,6 @@
 			form.submit();
 		})
 	});
-	function onDateChange(event){
-		 let product_expiry_date = document.getElementById("product_expiry_date");
-		console.log(product_expiry_date.value);
-	}
 </script>
 </head>
 <body>
@@ -102,6 +98,7 @@
 	</table>
 	<div class="form_box">
 		<form action="productRegisterPro.jsp" method="post" name='registerForm' enctype="multipart/form-data">
+			<input type="hidden" value="">
 			<table class="register_table">
 				<tr> 
 					<th width="30%">상품 분류 </th>
@@ -145,7 +142,7 @@
 				</tr>
 				<tr>
 					<th>판매만료 날짜</th>
-					<td><input type="date" name="product_expiry_date" id="product_expiry_date" onChange="onDateChange(event)" ></td>
+					<td><input type="date" name="product_expiry_date" id="product_expiry_date"></td>
 				</tr>
 				<tr>
 					<th>내용</th>

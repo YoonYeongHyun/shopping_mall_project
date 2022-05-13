@@ -26,8 +26,10 @@ public class ProductDAO {
 	
 	//상품등록 메서드 
 	public int insertProduct(ProductDTO product, Timestamp Product_expiry_date) {
+		
 		String sql1 = "insert into product(product_kind, product_name, product_price, discount_rate, product_sale_price, product_qty,"
 				+ "product_brand, product_expiry_date, product_image, product_content) values(?, ?, ?, ?, ?, ?, ?, ?, ? ,?)";
+		
 		float product_price = (float)product.getProduct_price();
 		int product_sale_price = product.getProduct_sale_price();
 		int discount_rate = 100 - Math.round((product_sale_price/product_price)*100);
@@ -59,13 +61,50 @@ public class ProductDAO {
 		return result;
 	}
 	
+
+	//상품수정 메서드 
+	public int updateProduct(ProductDTO product, Timestamp Product_expiry_date) {
+		
+		String sql1 = "update product set product_kind = ?, product_name = ?, product_price = ?, discount_rate = ?, product_sale_price = ?, "
+				+ "product_qty = ?, product_brand = ?, product_expiry_date = ?, product_image = ?, product_content = ? where Product_id = ?";
+		float product_price = (float)product.getProduct_price();
+		int product_sale_price = product.getProduct_sale_price();
+		int discount_rate = 100 - Math.round((product_sale_price/product_price)*100);
+		int result = 1;
+				
+		try {
+			conn = JDBCUtil.getConnection();
+			pstmt = conn.prepareStatement(sql1);
+			//글 등록 처리
+			pstmt = conn.prepareStatement(sql1);
+			pstmt.setString(1, product.getProduct_kind());
+			pstmt.setString(2, product.getProduct_name());
+			pstmt.setInt(3, product.getProduct_price());
+			pstmt.setInt(4, discount_rate);
+			pstmt.setInt(5, product.getProduct_sale_price());
+			pstmt.setInt(6, product.getProduct_qty());
+			pstmt.setString(7, product.getProduct_brand());
+			pstmt.setTimestamp(8, Product_expiry_date);
+			pstmt.setString(9, product.getProduct_image());
+			pstmt.setString(10, product.getProduct_content());
+			pstmt.setInt(11, product.getProduct_id());
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+			result=0;
+		} finally {
+			JDBCUtil.close(conn, pstmt, rs);
+		}
+		return result;
+	}
+	
 	
 	//상품리스트 조회 메서드
 	public List<ProductDTO> getProductsList() {
 		List<ProductDTO> productList = new ArrayList<ProductDTO>();
 		ProductDTO product = null;
 		String sql = "select * from product";
-			
+		
 		try {
 			conn = JDBCUtil.getConnection();
 			pstmt = conn.prepareStatement(sql);
@@ -98,20 +137,24 @@ public class ProductDAO {
 	}
 
 
-	//상품리스트 조회 메서드
-	public List<ProductDTO> getProductsCategoryList(String category) {
+	//상품리스트 조회 메서드(분류시)
+	public List<ProductDTO> getProductsCategoryList(String category, int start, int size) {
 		List<ProductDTO> productList = new ArrayList<ProductDTO>();
 		ProductDTO product = null;
 		try {
 			conn = JDBCUtil.getConnection();
-			if(category != null) {
-				String sql ="select * from product where product_kind like ?";
+			if(!category.equals("0")) {
+				String sql ="select * from product where product_kind like ? order by product_id desc limit ?, ? ";
 				pstmt = conn.prepareStatement(sql);
 				category +="%";
 				pstmt.setString(1, category);
+				pstmt.setInt(2, start-1);
+				pstmt.setInt(3, size);
 			}else {
-				String sql = "select * from product";
+				String sql = "select * from product order by product_id desc limit ?, ? ";
 				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, start-1);
+				pstmt.setInt(2, size);
 			}
 			rs = pstmt.executeQuery();
 			
@@ -142,12 +185,23 @@ public class ProductDAO {
 	}
 	
 	//상품 개수 조회메서드
-	public int getProductCount() {
-		String sql = "select count(product_id) from product";
+	public int getProductCount(String category) {
+		System.out.println();
+		String sql = "";
+		if(!category.equals("0")) {
+			category +="%";
+			sql = "select count(product_id) from product where product_kind like ?";
+		}else{
+			sql = "select count(product_id) from product";
+		}
 		int cnt = 0;
 		try {
 			conn = JDBCUtil.getConnection();
 			pstmt = conn.prepareStatement(sql);
+			if(!category.equals("0")) {
+				category +="%";
+				pstmt.setString(1, category);
+			}
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				cnt = rs.getInt(1);
@@ -162,18 +216,15 @@ public class ProductDAO {
 	}	
 	
 	//상품 삭제메서드
-	public int deleteProduct(int num) {
-		String sql = "delete from product where num = ?";
+	public int deleteProduct(int product_id) {
+		String sql = "delete from product where product_id = ?";
 		int cnt = 0;
 				
 		try {
 			conn = JDBCUtil.getConnection();
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, num);
-			rs = pstmt.executeQuery();
-			if(rs.next()) {
-				cnt = rs.getInt(1);
-			}
+			pstmt.setInt(1, product_id);
+			pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

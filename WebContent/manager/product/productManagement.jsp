@@ -7,7 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 <style>
 	#container{width:1000px; margin:0 auto;}
 	@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Do+Hyeon&family=Nanum+Gothic:wght@700&display=swap');
@@ -39,6 +39,12 @@
 	list_button{text-align: center}
 	#update_btn{width:50px; height:30px; background:#86E57F; color:white; border: none; border-radius:20%; font-weight: bold; cursor: pointer;}
 	#delete_btn{width:50px; height:30px; background:#aaa;    color:white; border: none; border-radius:20%; font-weight: bold; cursor: pointer;}
+	
+	#paging{text-align: center; margin-top: 20px}
+	#p_box{display: inline-block; width:25px; height:25px; border-radius: 10px; padding:5px; margin:5px }
+	#p_box:hover{background: black; color:white;}
+	.p_box_c{background: black; color:white; }
+	.p_box_b{font-weight: bold}
 </style>
 
 <%
@@ -48,14 +54,26 @@ if (managerId == null) { //세션이 null인 경우
 }
 
 ProductDAO productDAO = ProductDAO.getInstance();
-int cnt = productDAO.getProductCount();
 String category = request.getParameter("category");
-List<ProductDTO> productList = productDAO.getProductsCategoryList(category);
+if (category == null) { //세션이 null인 경우
+	category = "0";
+}
 
+
+String pageNum = request.getParameter("pageNum");
+if (pageNum == null) pageNum = "1";
+int currentPage = Integer.parseInt(pageNum);    //현재페이지
+int pageSize = 10;
+int startRow = (currentPage -1) * pageSize + 1; //현재페이지의 첫행
+int endRow = currentPage * pageSize;            //현재페이지의 마지막행
+// 게시판 전체 정보를 currentPage의  pageSize만큼 획득 
+List<ProductDTO> productList = productDAO.getProductsCategoryList(category, startRow, pageSize);
+int cnt = productDAO.getProductCount(category);
+int number = cnt - (currentPage-1) * pageSize;
 %>
 <script>
 	document.addEventListener("DOMContentLoaded", function(){
-		//카테고리 설정시 리스트 재구성
+		console.log(<%=category%>);
 		
 		//리스트 수정 및 삭제 버튼 구현
 		let update_btns = document.getElementsByName("update_btn");
@@ -64,15 +82,16 @@ List<ProductDTO> productList = productDAO.getProductsCategoryList(category);
 		delete_btns.forEach(element => element.addEventListener("click", function(e){
 			if(confirm("정말 삭제하시겠습니까?")){
 				let l_num = e.target.previousSibling.previousSibling.previousSibling.previousSibling.value;
-				<% 
-					//productDAO.deleteProduct();
-				%>
+				window.open('productDeletePro.jsp?product_id='+l_num, "", "width = 500, height = 200 left = 740");
+				setTimeout(function(){
+					location.reload();
+				},500);
 			}
 		}));
 
 		update_btns.forEach(element => element.addEventListener("click", function(e){
 			let l_num = e.target.previousSibling.previousSibling.value;
-			location="productUpdateForm.jsp?product_id="+ l_num;
+			location="productUpdateForm.jsp?product_id="+ l_num + "&pageNum=<%=pageNum%>&category=<%=category%>" ;
 			function reloadDivArea() {
 			    $('#list_table').load(location.href+' #list_table');
 			}
@@ -83,7 +102,7 @@ List<ProductDTO> productList = productDAO.getProductsCategoryList(category);
 
 	function main_category(){
 		let main_category = document.getElementById("main_category")
-		if(main_category != 0) location="productManagement.jsp?category="+main_category.value; 
+		if(main_category != "0") location="productManagement.jsp?category="+main_category.value; 
 	}
 	 
 </script>
@@ -136,10 +155,10 @@ List<ProductDTO> productList = productDAO.getProductsCategoryList(category);
 						<td>
 							<img src="/images_yhmall/<%=pList.getProduct_image() %>" width="30px" height="30px"/>
 						</td>
-						<td> <a href="productContent.jsp?product_id=<%=pList.getProduct_id()%>"> <%=pList.getProduct_name() %></a> </td>
-						<td><%=pList.getProduct_sale_price() %> </td>
-						<td><%=pList.getProduct_qty() %> </td>
-						<td><%=pList.getProduct_sales() %> </td>
+						<td><%=pList.getProduct_name()%></td>
+						<td><%=pList.getProduct_sale_price()%></td>
+						<td><%=pList.getProduct_qty()%> </td>
+						<td><%=pList.getProduct_sales()%></td>
 						<td>
 							<form action="" class="list_button">
 								<input type="hidden" name="l_id" id="l_id" value="<%=pList.getProduct_id()%>">
@@ -151,6 +170,44 @@ List<ProductDTO> productList = productDAO.getProductsCategoryList(category);
 				<%}	
 			}%>
 		</table>
+		</div>
+		<div id="paging">
+		<%
+		if(cnt > 0){
+			int pageCount =(cnt/pageSize) + (cnt%pageSize==0 ? 0 : 1);	
+			int pageBlock = 10;
+			
+			//시작페이지 설정
+			int startPage = 1;
+			if(currentPage % 10 != 0) startPage = (currentPage/10) * 10 +1;
+			else startPage = (currentPage/10 -1) * 10 +1;
+			
+			//끝페이지 설정
+			int endPage = startPage + pageBlock - 1;
+			if(endPage > pageCount) endPage = pageCount;
+			
+			//이전&첫 페이지
+			if(startPage > 10){%>
+				<a href='productManagement.jsp?pageNum=<%=1 %>&category=<%=category%>'><div id='p_box' class='p_box_b' title='첫 페이지'>≪</div></a>
+				<a href='productManagement.jsp?pageNum=<%=startPage-10 %>&category=<%=category%>'><div id='p_box' class='p_box_b'title='이전 페이지'>＜</div></a>
+			<%}
+			//페이징블럭처리
+			for (int i=startPage; i<=endPage; i++){
+				if(currentPage == i){
+					%><div id='p_box' class='p_box_c'><%=i %></div><%
+				} else{
+					%><a href='productManagement.jsp?pageNum=<%=i%>&category=<%=category%>'><div id='p_box'> <%=i %> </div></a><% 
+				}
+			}
+
+			//다음&마지막 페이지
+			if(endPage <= pageCount - (pageCount % pageSize)){%>
+				<a href='productManagement.jsp?pageNum=<%=startPage+10%>&category=<%=category%>'><div id='p_box' class='p_box_b' title='다음 페이지'>＞</div></a>
+				<a href='productManagement.jsp?pageNum=<%=pageCount%>&category=<%=category%>'><div id='p_box' class='p_box_b' title='끝 페이지'>≫</div></a>
+			<%}
+			//
+		}
+		%>
 		</div>
 	</div>
 	

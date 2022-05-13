@@ -1,3 +1,4 @@
+<%@page import="java.sql.Timestamp"%>
 <%@page import="manager.product.ProductDTO"%>
 <%@page import="manager.product.ProductDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -7,6 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <style>
 	#container{width:1000px; margin:0 auto;}
 	@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Do+Hyeon&family=Nanum+Gothic:wght@700&display=swap');
@@ -21,22 +23,22 @@
 	.top_menu th:hover {background:#555;}
 	.top_menu th a:hover {color:white}
 	.top_menu th a {display: block; height: 100%; text-decoration: none; color:black; line-height: 60px;font-size: 1.2em}
-	.top_menu th:nth-child(2) {background:#555;}
-	.top_menu th:nth-child(2) a {color:white}
+	.top_menu th:nth-child(1) {background:#555;}
+	.top_menu th:nth-child(1) a {color:white}
 	
 	/* 중단 테이블 */
 	.form_box{margin:0 auto; padding:50px 100px;}
-	.register_table{border-collapse: collapse; width:100%; border-top: 2px solid black; border-bottom: 2px solid black}
-	.register_table tr{height:50px; }
-	.register_table th{background:#F8F8F8}
-	.register_table td{ padding:10px 20px 10px 20px;}
-	.register_table th, .register_table td{border-bottom :1px solid #aaa; padding-top: 10px; padding-bottom: 10px}
+	.update_table{border-collapse: collapse; width:100%; border-top: 2px solid black; border-bottom: 2px solid black}
+	.update_table tr{height:50px; }
+	.update_table th{background:#F8F8F8}
+	.update_table td{ padding:10px 20px 10px 20px;}
+	.update_table th, .update_table td{border-bottom :1px solid #aaa; padding-top: 10px; padding-bottom: 10px}
 	#product_name{width:450px; height: 16px; padding:3px}
 	.short_input {width:225px; height: 16px; padding:3px}
-	.register_table input:focus{ outline: none;}
-	.register_table #discount_rate{width:100px}
-	.register_table textarea{width:448px; padding:5px}
-	.register_table textarea:focus{outline: none;}
+	.update_table input:focus{ outline: none;}
+	.update_table #discount_rate{width:100px}
+	.update_table textarea{width:448px; padding:5px}
+	.update_table textarea:focus{outline: none;}
 	input::file-selector-button{height:25px;border:none; background:black;color:white; cursor: pointer;}
 	.form_btns{text-align: center; margin-top: 20px; }
 	.form_btns input{width:100px; height:40px; border:none; background:black; font-size: 1em; font-weight: bold; color:white; cursor: pointer;}
@@ -45,14 +47,37 @@
 </head>
 <body>
 <%
-	request.setCharacterEncoding("utf-8");
+	String managerId = (String) session.getAttribute("managerId");
+	if (managerId == null) { //세션이 null인 경우
+		%><script>alert('로그인 하세요'); location='../logon/managerLoginForm.jsp';</script><%
+	}
+	String category = request.getParameter("category");
+	String pageNum = request.getParameter("pageNum");
+	if (pageNum == null) pageNum = "1";
+	
 	int product_id = Integer.parseInt(request.getParameter("product_id"));
-	System.out.println(product_id);
 	ProductDAO productDAO = ProductDAO.getInstance();
 	ProductDTO product = productDAO.getProduct(product_id);
-	
-
+	Timestamp ped1 = product.getProduct_expiry_date();
+	String ped2 = (ped1.toString()).substring(0, 10);
 %>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+	
+	// 페이지 로드시 select box 선택
+	let product_kind = document.getElementById('product_kind');  
+	for (let i=0; i<product_kind.options.length; i++){  
+		if(product_kind.options[i].value == <%=product.getProduct_kind()%>){
+			product_kind.options[i].selected = true;
+		}
+	}
+	let form = document.updateForm;
+	document.getElementById('btn_update').addEventListener("click", function(){
+		form.submit();
+	});
+});
+
+</script>
 <div id="container">
 	<div class="m_title"><a href="#">MALL</a></div>
 	<h2>쇼핑몰 관리자 페이지</h2>
@@ -67,12 +92,15 @@
 		</tr>
 	</table>
 	<div class="form_box">
-		<form action="productRegisterPro.jsp" method="post" name='registerForm' enctype="multipart/form-data">
-			<table class="register_table">
+		<form action="productUpdatePro.jsp" method="post" name='updateForm' enctype="multipart/form-data">
+			<table class="update_table">
+				<input type="hidden" name="product_id" id="product_id" value="<%=product.getProduct_id()%>" ></td>
+				<input type="hidden" name="pageNum"value="<%=pageNum%>" ></td>
+				<input type="hidden" name="category"value="<%=category%>" ></td>
 				<tr> 
 					<th width="30%">상품 분류 </th>
 					<td> 
-						<select name="product_kind">
+						<select name="product_kind" id="product_kind">
 							<option value="101">파이류</option>
 							<option value="102">비스킷류</option>
 							<option value="103">스낵류</option>
@@ -111,7 +139,7 @@
 				</tr>
 				<tr>
 					<th>판매만료 날짜</th>
-					<td><input type="date" name="product_expiry_date" id="product_expiry_date" onChange="onDateChange(event)"></td>
+					<td><input type="date" name="product_expiry_date" id="product_expiry_date" value="<%=ped2 %>"></td>
 				</tr>
 				<tr>
 					<th>내용</th>
@@ -119,7 +147,10 @@
 				</tr>
 				<tr>
 					<th>이미지</th>
-					<td><input type="file" name="product_image" ></td>
+					<td>
+						<input type="file" name="product_image" > <br>
+						<input type="text" name="pre_product_image" id="pre_product_image" value="<%=product.getProduct_image() %>" readonly ></td>
+					</td>
 				</tr>
 			</table>
 			<div class="form_btns">
