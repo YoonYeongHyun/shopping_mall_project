@@ -52,6 +52,7 @@
 		%><script>alert('로그인 하세요'); location='../logon/managerLoginForm.jsp';</script><%
 	}
 	String category = request.getParameter("category");
+	String search = request.getParameter("search");
 	String pageNum = request.getParameter("pageNum");
 	if (pageNum == null) pageNum = "1";
 	
@@ -97,6 +98,7 @@ document.addEventListener("DOMContentLoaded", function(){
 				<input type="hidden" name="product_id" id="product_id" value="<%=product.getProduct_id()%>" ></td>
 				<input type="hidden" name="pageNum"value="<%=pageNum%>" ></td>
 				<input type="hidden" name="category"value="<%=category%>" ></td>
+				<input type="hidden" name="search"value="<%=search%>" ></td>
 				<tr> 
 					<th width="30%">상품 분류 </th>
 					<td> 

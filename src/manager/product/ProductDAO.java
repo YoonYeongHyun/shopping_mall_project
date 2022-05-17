@@ -138,23 +138,63 @@ public class ProductDAO {
 
 
 	//상품리스트 조회 메서드(분류시)
-	public List<ProductDTO> getProductsCategoryList(String category, int start, int size) {
+	public List<ProductDTO> getProductsCategoryList(String category, String search, int start, int size) {
 		List<ProductDTO> productList = new ArrayList<ProductDTO>();
 		ProductDTO product = null;
 		try {
 			conn = JDBCUtil.getConnection();
 			if(!category.equals("0")) {
-				String sql ="select * from product where product_kind like ? order by product_id desc limit ?, ? ";
-				pstmt = conn.prepareStatement(sql);
-				category +="%";
-				pstmt.setString(1, category);
-				pstmt.setInt(2, start-1);
-				pstmt.setInt(3, size);
+				if(!search.equals("0")) {
+					String str1 = "";
+					String sql = "";
+					if((search.substring(0, 1)).equals("1")) {
+						sql ="select * from product where product_kind like ? and product_name like ? "
+								+ " order by product_id desc limit ?, ? ";
+					}else if((search.substring(0, 1)).equals("2")) {
+						sql ="select * from product where product_kind like ? and product_brand like ? "
+								+ " order by product_id desc limit ?, ? ";
+					}
+					str1 = search.substring(1);
+					category +="%";
+					search = "%"+ str1 + "%";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setString(1, category);
+					pstmt.setString(2, search);
+					pstmt.setInt(3, start-1);
+					pstmt.setInt(4, size);
+				}
+				else {
+					String sql ="select * from product where product_kind like ? order by product_id desc limit ?, ? ";
+					pstmt = conn.prepareStatement(sql);
+					category +="%";
+					pstmt.setString(1, category);
+					pstmt.setInt(2, start-1);
+					pstmt.setInt(3, size);
+				}
 			}else {
-				String sql = "select * from product order by product_id desc limit ?, ? ";
-				pstmt = conn.prepareStatement(sql);
-				pstmt.setInt(1, start-1);
-				pstmt.setInt(2, size);
+				if(!search.equals("0")) {
+					String str1 = "";
+					String sql = "";
+					if((search.substring(0, 1)).equals("1")) {
+						sql ="select * from product where product_name like ? "
+								+ " order by product_id desc limit ?, ? ";
+					}else if((search.substring(0, 1)).equals("2")) {
+						sql ="select * from product where product_brand like ? "
+								+ "order by product_id desc limit ?, ? ";
+					}
+					str1 = search.substring(1);
+					search = "%"+ str1 + "%";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setString(1, search);
+					pstmt.setInt(2, start-1);
+					pstmt.setInt(3, size);
+				}
+				else {
+					String sql = "select * from product order by product_id desc limit ?, ? ";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setInt(1, start-1);
+					pstmt.setInt(2, size);	
+				}
 			}
 			rs = pstmt.executeQuery();
 			
@@ -185,22 +225,50 @@ public class ProductDAO {
 	}
 	
 	//상품 개수 조회메서드
-	public int getProductCount(String category) {
-		System.out.println();
+	public int getProductCount(String category, String search) {
 		String sql = "";
-		if(!category.equals("0")) {
-			category +="%";
-			sql = "select count(product_id) from product where product_kind like ?";
-		}else{
-			sql = "select count(product_id) from product";
-		}
 		int cnt = 0;
 		try {
 			conn = JDBCUtil.getConnection();
-			pstmt = conn.prepareStatement(sql);
 			if(!category.equals("0")) {
-				category +="%";
-				pstmt.setString(1, category);
+				if(!search.equals("0")) {
+					String str1 = "";
+					sql = "";
+					if((search.substring(0, 1)).equals("1")) {
+						sql ="select count(*) from product where product_kind like ? and product_name like ?";
+					}else if((search.substring(0, 1)).equals("2")) {
+						sql ="select count(*) from product where product_kind like ? and product_brand like ?";
+					}
+					str1 = search.substring(1);
+					category +="%";
+					search = "%"+ str1 + "%";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setString(1, category);
+					pstmt.setString(2, search);
+				}
+				else {
+					sql ="select count(*) from product where product_kind like ?";
+					pstmt = conn.prepareStatement(sql);
+					category +="%";
+					pstmt.setString(1, category);
+				}
+			}else {
+				if(!search.equals("0")) {
+					String str1 = "";
+					if((search.substring(0, 1)).equals("1")) {
+						sql ="select count(*) from product where product_name like ?";
+					}else if((search.substring(0, 1)).equals("2")) {
+						sql ="select count(*) from product where product_brand like ?";
+					}
+					str1 = search.substring(1);
+					search = "%"+ str1 + "%";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setString(1, search);
+				}
+				else {
+					sql = "select * from product order by product_id desc";
+					pstmt = conn.prepareStatement(sql);
+				}
 			}
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
@@ -270,6 +338,45 @@ public class ProductDAO {
 		return product;
 	}
 	
+	//메인화면 상품조회 메서드
+
+	//메인 페이지 리스트 메서드
+	public List<ProductDTO> getMainProductsList(int num) {
+		List<ProductDTO> productList = new ArrayList<ProductDTO>();
+		ProductDTO product = null;
+		try {
+			conn = JDBCUtil.getConnection();
+			String sql = "";
+			if(num == 1) sql = "select * from product order by product_sales desc limit 8";
+			else if(num == 2) sql ="select * from product order by discount_rate desc limit 8";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				product = new ProductDTO();
+				product.setProduct_id(rs.getInt("product_id"));
+				product.setProduct_kind(rs.getString("product_kind"));
+				product.setProduct_name(rs.getString("product_name"));
+				product.setProduct_price(rs.getInt("product_price"));
+				product.setDiscount_rate(rs.getInt("discount_rate"));
+				product.setProduct_sale_price(rs.getInt("product_sale_price"));
+				product.setProduct_qty(rs.getInt("product_qty"));
+				product.setProduct_sales(rs.getInt("product_sales"));
+				product.setProduct_brand(rs.getString("product_brand"));
+				product.setProduct_expiry_date(rs.getTimestamp("product_expiry_date"));
+				product.setProduct_image(rs.getString("product_image"));
+				product.setReg_date(rs.getTimestamp("reg_date"));
+				productList.add(product);
+			}
+		
+		} catch (Exception e) {
+			System.out.println("getProductsCategoryList: " + e.getMessage());
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.close(conn, pstmt, rs);
+		}
+		return productList;
+	}
 }
 
 	

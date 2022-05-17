@@ -34,11 +34,11 @@
 		e.printStackTrace();
 	}
 	
-	//문자열을 타임스탬프변수로 변환
-	String product_expiry_date1 = (multi.getParameter("product_expiry_date"));
-	String product_expiry_date2 = " 00:00:00";
-	product_expiry_date1 += product_expiry_date2;
-	Timestamp product_expiry_date = Timestamp.valueOf(product_expiry_date1);
+	
+	String category = multi.getParameter("category");
+	String search = request.getParameter("search");
+	String pageNum = multi.getParameter("pageNum");
+	if (pageNum == null) pageNum = "1";
 	
 	ProductDAO productDAO = ProductDAO.getInstance();
 	int product_id = Integer.parseInt(multi.getParameter("product_id"));
@@ -50,10 +50,13 @@
 	String product_brand = multi.getParameter("product_brand");
 	String product_content = multi.getParameter("product_content");
 	String pre_product_image = multi.getParameter("pre_product_image");
-	String category = multi.getParameter("category");
-	String pageNum = multi.getParameter("pageNum");
-	if (pageNum == null) pageNum = "1";
 	
+	//문자열을 타임스탬프변수로 변환
+		String product_expiry_date1 = (multi.getParameter("product_expiry_date"));
+		String product_expiry_date2 = " 00:00:00";
+		product_expiry_date1 += product_expiry_date2;
+		Timestamp product_expiry_date = Timestamp.valueOf(product_expiry_date1);
+		
 	ProductDTO product = new ProductDTO();
 	product.setProduct_id(product_id);
 	product.setProduct_kind(product_kind);
@@ -72,7 +75,7 @@
 	if(result == 1){%>
 		<script> 
 			alert("상품이 수정되었습니다."); 
-			location="productManagement.jsp?pageNum=<%=pageNum%>&category<%=category%>"
+			location="productManagement.jsp?pageNum=<%=pageNum%>&category<%=category%>&search=<%=search%>"
 		</script>
 	<%}else{%>
 		<script> 

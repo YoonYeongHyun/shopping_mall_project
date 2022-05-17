@@ -48,17 +48,18 @@
 </style>
 
 <%
+request.setCharacterEncoding("UTF-8");
+
 String managerId = (String) session.getAttribute("managerId");
 if (managerId == null) { //세션이 null인 경우
 	%><script>alert('로그인 하세요'); location='../logon/managerLoginForm.jsp';</script><%
 }
 
-ProductDAO productDAO = ProductDAO.getInstance();
 String category = request.getParameter("category");
-if (category == null) { //세션이 null인 경우
-	category = "0";
-}
+if (category == null) category = "0";
 
+String search = request.getParameter("search");
+if (search == null) search = "0";
 
 String pageNum = request.getParameter("pageNum");
 if (pageNum == null) pageNum = "1";
@@ -67,13 +68,22 @@ int pageSize = 10;
 int startRow = (currentPage -1) * pageSize + 1; //현재페이지의 첫행
 int endRow = currentPage * pageSize;            //현재페이지의 마지막행
 // 게시판 전체 정보를 currentPage의  pageSize만큼 획득 
-List<ProductDTO> productList = productDAO.getProductsCategoryList(category, startRow, pageSize);
-int cnt = productDAO.getProductCount(category);
+
+
+ProductDAO productDAO = ProductDAO.getInstance();
+List<ProductDTO> productList = productDAO.getProductsCategoryList(category, search, startRow, pageSize);
+int cnt = productDAO.getProductCount(category, search);
 int number = cnt - (currentPage-1) * pageSize;
 %>
 <script>
 	document.addEventListener("DOMContentLoaded", function(){
-		console.log(<%=category%>);
+		
+		document.getElementById('search_btn').addEventListener("click", function(){
+			let s_select = document.getElementById('s_select');
+			let s_input = document.getElementById('s_input');
+			let search = s_select.value + s_input.value;
+			location="productManagement.jsp?category=" + <%=category%> + "&search=" + search;
+		});
 		
 		//리스트 수정 및 삭제 버튼 구현
 		let update_btns = document.getElementsByName("update_btn");
@@ -91,7 +101,7 @@ int number = cnt - (currentPage-1) * pageSize;
 
 		update_btns.forEach(element => element.addEventListener("click", function(e){
 			let l_num = e.target.previousSibling.previousSibling.value;
-			location="productUpdateForm.jsp?product_id="+ l_num + "&pageNum=<%=pageNum%>&category=<%=category%>" ;
+			location="productUpdateForm.jsp?product_id="+ l_num + "&pageNum=<%=pageNum%>&category=<%=category%>&search=<%=search%>";
 			function reloadDivArea() {
 			    $('#list_table').load(location.href+' #list_table');
 			}
@@ -133,29 +143,43 @@ int number = cnt - (currentPage-1) * pageSize;
 				<option value="5">세트상품</option>
 				<option value="6">수입상품</option>
 			</select>
-					
 		</div>
+		
+		<div class="top_search">
+			<input type="hidden" name="search" value="0">
+			<span class="c_1">
+				<select id="s_select">
+					<option value = "1" selected>제품명</option>
+					<option value = "2">제조사</option>
+				</select>
+			</span>
+			<span class="c_2"><input type="text" id="s_input"> </span>
+			<span class="c_3"> <input type="button" value="검색" id="search_btn"> </span>
+		</div>
+		<p><%=cnt %> </p>
 		<div id="list_table">
 		<table class="list_table" >
 			<tr>
 				<th width="10%">상품코드</th>
 				<th width="5%"></th>
-				<th width="40%">상품명</th>
+				<th width="30%">상품명</th>
+				<th width="10%">제조사</th>
 				<th width="10%">판매가격</th>
 				<th width="10%">재고</th>
 				<th width="10%">판매량</th>
 				<th width="15%">기능</th>
 			</tr>
 			<%if(cnt == 0){ %>
-				<tr><td colspan="7"> 등록된 상품이 없습니다. <%=cnt %> </td></tr>
+				<tr><td colspan="8"> 등록된 상품이 없습니다. <%=cnt %> </td></tr>
 			<%}else if(cnt != 0){
 				for(ProductDTO pList: productList){%>
 					<tr>
 						<td id="1con"><%=pList.getProduct_id() %></td>
 						<td>
-							<img src="/images_yhmall/<%=pList.getProduct_image() %>" width="30px" height="30px"/>
+							<img src="/images_yhmall/<%=pList.getProduct_image()%>" width="30px" height="30px"/>
 						</td>
 						<td><%=pList.getProduct_name()%></td>
+						<td><%=pList.getProduct_brand()%></td>
 						<td><%=pList.getProduct_sale_price()%></td>
 						<td><%=pList.getProduct_qty()%> </td>
 						<td><%=pList.getProduct_sales()%></td>
@@ -188,22 +212,32 @@ int number = cnt - (currentPage-1) * pageSize;
 			
 			//이전&첫 페이지
 			if(startPage > 10){%>
-				<a href='productManagement.jsp?pageNum=<%=1 %>&category=<%=category%>'><div id='p_box' class='p_box_b' title='첫 페이지'>≪</div></a>
-				<a href='productManagement.jsp?pageNum=<%=startPage-10 %>&category=<%=category%>'><div id='p_box' class='p_box_b'title='이전 페이지'>＜</div></a>
+				<a href='productManagement.jsp?pageNum=<%=1 %>&category=<%=category%>&search=<%=search%>'>
+					<div id='p_box' class='p_box_b' title='첫 페이지'>≪</div>
+				</a>
+				<a href='productManagement.jsp?pageNum=<%=startPage-10 %>&category=<%=category%>&search=<%=search%>'>
+					<div id='p_box' class='p_box_b'title='이전 페이지'>＜</div>
+				</a>
 			<%}
 			//페이징블럭처리
 			for (int i=startPage; i<=endPage; i++){
 				if(currentPage == i){
 					%><div id='p_box' class='p_box_c'><%=i %></div><%
 				} else{
-					%><a href='productManagement.jsp?pageNum=<%=i%>&category=<%=category%>'><div id='p_box'> <%=i %> </div></a><% 
+					%><a href='productManagement.jsp?pageNum=<%=i%>&category=<%=category%>&search=<%=search%>'>
+						<div id='p_box'> <%=i %> </div>
+					</a><% 
 				}
 			}
 
 			//다음&마지막 페이지
 			if(endPage <= pageCount - (pageCount % pageSize)){%>
-				<a href='productManagement.jsp?pageNum=<%=startPage+10%>&category=<%=category%>'><div id='p_box' class='p_box_b' title='다음 페이지'>＞</div></a>
-				<a href='productManagement.jsp?pageNum=<%=pageCount%>&category=<%=category%>'><div id='p_box' class='p_box_b' title='끝 페이지'>≫</div></a>
+				<a href='productManagement.jsp?pageNum=<%=startPage+10%>&category=<%=category%>&search=<%=search%>'>
+					<div id='p_box' class='p_box_b' title='다음 페이지'>＞</div>
+				</a>
+				<a href='productManagement.jsp?pageNum=<%=pageCount%>&category=<%=category%>&search=<%=search%>'>
+					<div id='p_box' class='p_box_b' title='끝 페이지'>≫</div>
+				</a>
 			<%}
 			//
 		}
