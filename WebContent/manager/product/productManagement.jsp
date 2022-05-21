@@ -62,18 +62,16 @@ String search = request.getParameter("search");
 if (search == null) search = "0";
 
 String pageNum = request.getParameter("pageNum");
+
+ProductDAO productDAO = ProductDAO.getInstance();
+int cnt = productDAO.getProductCount(category, search);
 if (pageNum == null) pageNum = "1";
 int currentPage = Integer.parseInt(pageNum);    //현재페이지
 int pageSize = 10;
 int startRow = (currentPage -1) * pageSize + 1; //현재페이지의 첫행
 int endRow = currentPage * pageSize;            //현재페이지의 마지막행
 // 게시판 전체 정보를 currentPage의  pageSize만큼 획득 
-
-
-ProductDAO productDAO = ProductDAO.getInstance();
 List<ProductDTO> productList = productDAO.getProductsCategoryList(category, search, startRow, pageSize);
-int cnt = productDAO.getProductCount(category, search);
-int number = cnt - (currentPage-1) * pageSize;
 %>
 <script>
 	document.addEventListener("DOMContentLoaded", function(){
@@ -81,7 +79,7 @@ int number = cnt - (currentPage-1) * pageSize;
 		document.getElementById('search_btn').addEventListener("click", function(){
 			let s_select = document.getElementById('s_select');
 			let s_input = document.getElementById('s_input');
-			let search = s_select.value + s_input.value;
+			let search = s_select.value + s_input.value; //검색분류와 검색값을 같이 보냄
 			location="productManagement.jsp?category=" + <%=category%> + "&search=" + search;
 		});
 		

@@ -5,81 +5,131 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- 제이쿼리 불러오기 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
- 
-<!-- Slick 불러오기 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick-theme.min.css">
+<link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css"/>
+<script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+
+ <!-- 
+ -->
 </head>
 <style>
-	#container{width:1200px; margin:0 auto;}
-	#slider-div div{height: 500px}
-	#slider-div ul{justify-content: center; display: flex;}
-	
-	table{width:1200px; border-collapse: collapse;}
-	tr {height: 300px; width:1200px;}
-	td {text-align: center;}
-	td p {margin:0 auto;}
-	td img{border: 1px solid #eee;}
-	.price{text-decoration: line-through;}
-	.sale_price{color: red}
-	
+#container{width:1200px; margin:50px auto;}
+
+.swiper-slide {text-align: center;  font-size: 18px; display: -webkit-box; display: -ms-flexbox; 
+				display: -webkit-flex; display: flex; -webkit-box-pack: center; -ms-flex-pack: center; 
+				-webkit-justify-content: center; justify-content: center; -webkit-box-align: center; 
+				-ms-flex-align: center; -webkit-align-items: center; align-items: center;}
+.swiper-slide img {display: block; height:500px; object-fit: cover;}
+.swiper-wrapper a{width:100%; height: 500px; overflow: hidden;}
+.swiper-pagination-bullet { width: 12px; height: 12px; background: transparent; border: 1px solid white; opacity: 1; }
+.swiper-pagination-bullet-active { width: 40px; transition: width .5s; border-radius: 5px; background: white; border: 1px solid transparent; }
+
+h2{text-align: center; font-weight: bold; margin-top:100px}
+.main_table{width:1200px; border-collapse: collapse;}
+.main_table tr {height: 300px; width:1200px;}
+.main_table td {text-align: center;}
+.main_table td p {margin:0 auto;}
+.main_table td img{border: 1px solid #ccc;}
+.price{text-decoration: line-through;}
+.sale_price{color: red}
+.product_img_box{position: relative; text-align: center; display:inline-block; width:202px}
+.product__hidden_menu{position: absolute; top:120px; left:26.1px; visibility: hidden;}
+.product__hidden_menu span{display:inline-block; width:50px; height:50px; background: white; border-radius: 100%;
+							position: relative; border: 1px solid black; margin:0 10px; }
+.product__hidden_menu span img{border:none; position: absolute; top:9px; left:9px;}
 </style>
-<script>
-$(function(){
-	$('#slider-div').slick({
-    	slide: 'div',        //슬라이드 되어야 할 태그 ex) div, li 
-     	infinite : true,     //무한 반복 옵션     
-       	slidesToShow : 1,        // 한 화면에 보여질 컨텐츠 개수
-       	slidesToScroll : 1,        //스크롤 한번에 움직일 컨텐츠 개수
-        speed : 100,     // 다음 버튼 누르고 다음 화면 뜨는데까지 걸리는 시간(ms)
-        autoplay : true,            // 자동 스크롤 사용 여부
-        autoplaySpeed : 5000,         // 자동 스크롤 시 다음으로 넘어가는데 걸리는 시간 (ms)
-        draggable : true,     //드래그 가능 여부 
-        dots: true,
- 	});
-})
-    </script>
 
 <%
+String subject = request.getParameter("subject");
+if (subject == null) subject = "1";
 ProductDAO productDAO = ProductDAO.getInstance();
-List<ProductDTO> mPList1 = productDAO.getMainProductsList(1);
-List<ProductDTO> mPList2 = productDAO.getMainProductsList(2);
+List<ProductDTO> mPList1 = productDAO.getSpecialProductsList("1", 1, 8);
+List<ProductDTO> mPList2 = productDAO.getSpecialProductsList("2", 1, 8);
 
 
-%>
+%> 
 
-	<div>
-    	<div id="slider-div">
-        	<div style="text-align: center; background: rgb(84, 47, 39);"> 
-            	<img style="display: inline-block;" src="../../images/main_slider01.png"> 
-            </div>
-            <div style="text-align: center; background: rgb(103, 156, 52);"> 
-            	<img style="display: inline-block;"  src="../../images/main_slider02.png"> 
-            </div>
-            <div style="text-align: center; background: rgb(184, 207, 213);"> 
-            	<img style="display: inline-block;"  src="../../images/main_slider03.png"> 
-            </div>
-            <div style="text-align: center; background: rgb(250, 218, 207);"> 
-            	<img style="display: inline-block;"  src="../../images/main_slider04.png"> 
-            </div>
-            <div style="text-align: center; background: rgb(228, 230, 229);"> 
-            	<img style="display: inline-block;"  src="../../images/main_slider05.png"> 
-            </div>
-   		</div>
-    </div>
+<div class="swiper mySwiper">
+	<div class="swiper-wrapper">
+        <div class="swiper-slide" style="background: rgb(250, 218, 207);">
+        	<a href="@" ><img style="display: inline-block;"  src="../../images/main_slider04.png"></a>
+        </div>
+        <div class="swiper-slide" style="background: rgb(228, 230, 229);"> 
+            <a href="@"><img style="display: inline-block;"  src="../../images/main_slider05.png"></a> 
+        </div>
+        <div class="swiper-slide" style="background: rgb(243, 243, 243);"> 
+          	<a href="@"><img style="display: inline-block;"  src="../../images/main_slider06.png"></a> 
+        </div>
+        <div class="swiper-slide" style="background: rgb(133, 14, 3);"> 
+         	<a href="@"><img style="display: inline-block;"  src="../../images/main_slider07.jpg"></a> 
+        </div>
+        <div class="swiper-slide" style=""> 
+          	<a href="shoppingAll.jsp?code=4&product_id=172"><img style="display: inline-block;"  src="../../images/main_slider08.png"></a> 
+        </div>
+		</div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+		<div class="swiper-pagination"></div>
+</div>
+
+<script>
+var swiper = new Swiper(".mySwiper", {
+	autoplay: {
+   		delay: 5000, // 시간 설정
+    },
+    loop: true,
+    cssMode: true,
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true, 
+    },
+    mousewheel: false,
+    keyboard: true,
+});
+  
+document.addEventListener("DOMContentLoaded", function(){
+	let product_img_box = document.getElementsByName("product_img_box");
+	
+	product_img_box.forEach(element => element.addEventListener("mouseenter", function(e){
+		let product_image = e.target.firstChild.nextSibling;
+		product_image.style.opacity= "0.5";
+		let hidden_box = e.target.lastChild.previousSibling;
+		hidden_box.style.visibility="visible";
+	}));
+	product_img_box.forEach(element => element.addEventListener("mouseleave", function(e){
+		let product_image = e.target.firstChild.nextSibling;
+		product_image.style.opacity= "1";
+		let hidden_box = e.target.lastChild.previousSibling;
+		hidden_box.style.visibility="hidden";
+	}));
+})
+</script>
+
 
 <div id="container">
 	<h2> 스낵킹 최고 인기상품 </h2>
-	<table>
+	<table class="main_table">
 		<tr>
 			<% int cnt = 1;
 			for(ProductDTO list1 : mPList1){ %>
 			<td width="25%"> 
-				<img src="/images_yhmall/<%=list1.getProduct_image()%>" width="200px" height="200px"/> <br>
-				<p><%=list1.getProduct_name()%></p>
+				<div class="product_img_box" name="product_img_box">
+					<a href="shoppingAll.jsp?code=4&product_id=<%=list1.getProduct_id()%>">
+						<img  id="product_img" src="/images_yhmall/<%=list1.getProduct_image()%>" width="200px" height="200px"/> 
+					</a>
+					<div class="product__hidden_menu">
+						<input type="hidden" value="<%=list1.getProduct_id()%>">
+						<span><a><img src="../../icons/heart.png"></a></span>
+						<span><a><img src="../../icons/basket.png"></a></span>
+					</div>
+				</div>
+				<br>
+				<p><a href="shoppingAll.jsp?code=4&product_id=<%=list1.getProduct_id()%>"><%=list1.getProduct_name()%></a></p>
 				<% if(list1.getProduct_price() == list1.getProduct_sale_price()){%>
 					<span class="sale_price" style="color:black;">\<%=list1.getProduct_sale_price()%></span>
 				<%}else{%>
@@ -97,13 +147,22 @@ List<ProductDTO> mPList2 = productDAO.getMainProductsList(2);
 	</table>
 	
 	<h2> 스낵킹  최고 할인상품</h2>
-	<table>
+	<table class="main_table">
 		<tr>
 			<% cnt = 1;
 			for(ProductDTO list2 : mPList2){ %>
 			<td width="25%"> 
-				<img src="/images_yhmall/<%=list2.getProduct_image()%>" width="200px" height="200px"/> <br>
-				<p><%=list2.getProduct_name()%></p>
+				<div class="product_img_box" name="product_img_box">
+					<a href="shoppingAll.jsp?code=4&product_id=<%=list2.getProduct_id()%>">
+						<img  id="product_img" src="/images_yhmall/<%=list2.getProduct_image()%>" width="200px" height="200px"/> 
+					</a>
+					<div class="product__hidden_menu">
+						<input type="hidden" value="<%=list2.getProduct_id()%>">
+						<span><a><img src="../../icons/heart.png"></a></span>
+						<span><a><img src="../../icons/basket.png"></a></span>
+					</div>
+				</div>
+				<p><a href="shoppingAll.jsp?code=4&product_id=<%=list2.getProduct_id()%>"><%=list2.getProduct_name()%></a></p>
 				<% if(list2.getProduct_price() == list2.getProduct_sale_price()){%>
 					<span class="sale_price" style="color:black;">\<%=list2.getProduct_sale_price()%></span>
 				<%}else{%>
@@ -121,4 +180,5 @@ List<ProductDTO> mPList2 = productDAO.getMainProductsList(2);
 	</table>
 	<hr>
 </div>
+
 </html>
