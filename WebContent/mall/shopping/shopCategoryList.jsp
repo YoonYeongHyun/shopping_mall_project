@@ -2,11 +2,13 @@
 <!DOCTYPE html>
 <%@page import="java.util.List"%>
 <%@page import="manager.product.*"%>
+<head>
 <meta charset="UTF-8">
+</head>
 <title>Insert title here</title>
 <style>
 #container{width:1200px; margin:0 auto;}
-	
+
 table{width:1200px; border-collapse: collapse;}
 tr {height: 300px; width:1200px;}
 td {text-align: center;}
@@ -84,6 +86,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 </script>
 <div id="container">
+	
 	<table>
 		<tr>
 			<% int rootCnt = 0;
@@ -104,10 +107,10 @@ document.addEventListener("DOMContentLoaded", function(){
 				<div id="product_info">
 				<p><a href="shoppingAll.jsp?code=4&product_id=<%=list1.getProduct_id() %>"><%=list1.getProduct_name()%></a></p>
 				<% if(list1.getProduct_price() == list1.getProduct_sale_price()){%>
-					<span class="sale_price" style="color:black;">\<%=list1.getProduct_sale_price()%></span>
+					<span class="sale_price" style="color:black;"><%=list1.getProduct_sale_price()%></span>
 				<%}else{%>
-					<span class="price" style="color:#aaa;">\<%=list1.getProduct_price()%></span>
-					<span class="sale_price">\<%=list1.getProduct_sale_price()%></span>
+					<span class="price" style="color:#aaa;"><%=list1.getProduct_price()%></span>&ensp;
+					<span class="sale_price"><%=list1.getProduct_sale_price()%></span>
 				<%}
 				++rootCnt;
 				%>
@@ -119,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	<div id="paging">
 		<%
 		if(cnt > 0){
-			int pageCount =(cnt/pageSize) + (cnt%pageSize==0 ? 0 : 1);	
+			int pageCount =(cnt/pageSize) + (cnt%20==0 ? 0 : 1);	
 			int pageBlock = 10;
 			
 			//시작페이지 설정
@@ -134,10 +137,10 @@ document.addEventListener("DOMContentLoaded", function(){
 			//이전&첫 페이지
 			if(startPage > 10){%>
 				<a href='shoppingAll.jsp?pageNum=<%=1 %>&category=<%=category%>&search=<%=search%>&code=2'>
-					<div id='p_box' class='p_box_b' title='첫 페이지'>≪</div>
+					<div id='p_box' class='p_box_b'> < </div>
 				</a>
 				<a href='shoppingAll.jsp?pageNum=<%=startPage-10 %>&category=<%=category%>&search=<%=search%>&code=2'>
-					<div id='p_box' class='p_box_b'title='이전 페이지'>＜</div>
+					<div id='p_box' class='p_box_b'> << </div>
 				</a>
 			<%}
 			//페이징블럭처리
@@ -152,15 +155,14 @@ document.addEventListener("DOMContentLoaded", function(){
 			}
 
 			//다음&마지막 페이지
-			if(endPage <= pageCount - (pageCount % pageSize)){%>
+			if(endPage <= pageCount - (pageCount % 10)){%>
 				<a href='shoppingAll.jsp?pageNum=<%=startPage+10%>&category=<%=category%>&search=<%=search%>&code=2'>
-					<div id='p_box' class='p_box_b' title='다음 페이지'>＞</div>
+					<div id='p_box' class='p_box_b'>></div>
 				</a>
 				<a href='shoppingAll.jsp?pageNum=<%=pageCount%>&category=<%=category%>&search=<%=search%>&code=2'>
-					<div id='p_box' class='p_box_b' title='끝 페이지'>≫</div>
+					<div id='p_box' class='p_box_b'>>></div>
 				</a>
 			<%}
-			//
 		}
 		%>
 		</div>

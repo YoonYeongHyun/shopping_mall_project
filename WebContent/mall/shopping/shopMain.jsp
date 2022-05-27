@@ -1,3 +1,4 @@
+<%@page import="java.text.DecimalFormat"%>
 <%@page import="manager.product.*"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -9,13 +10,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css"/>
 <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
-
- <!-- 
- -->
 </head>
-<style>
-#container{width:1200px; margin:50px auto;}
 
+<style>
+
+#container{width:1200px; margin:50px auto;}
 .swiper-slide {text-align: center;  font-size: 18px; display: -webkit-box; display: -ms-flexbox; 
 				display: -webkit-flex; display: flex; -webkit-box-pack: center; -ms-flex-pack: center; 
 				-webkit-justify-content: center; justify-content: center; -webkit-box-align: center; 
@@ -25,15 +24,17 @@
 .swiper-pagination-bullet { width: 12px; height: 12px; background: transparent; border: 1px solid white; opacity: 1; }
 .swiper-pagination-bullet-active { width: 40px; transition: width .5s; border-radius: 5px; background: white; border: 1px solid transparent; }
 
-h2{text-align: center; font-weight: bold; margin-top:100px}
-.main_table{width:1200px; border-collapse: collapse;}
-.main_table tr {height: 300px; width:1200px;}
+h2{text-align: center;}
+.main_table{width:1200px; border-collapse: collapse; margin-bottom: 80px}
+.main_table tr {height: 300px; width:1200px; border-bottom:1px solid #eee; }
 .main_table td {text-align: center;}
 .main_table td p {margin:0 auto;}
-.main_table td img{border: 1px solid #ccc;}
+
+.product_img_box{position: relative; text-align: center; display:inline-block; width:202px}
+#product_img{border: 1px solid #ccc;}
+.medal{position: absolute; top:0px; left: 0px; border: none;}
 .price{text-decoration: line-through;}
 .sale_price{color: red}
-.product_img_box{position: relative; text-align: center; display:inline-block; width:202px}
 .product__hidden_menu{position: absolute; top:120px; left:26.1px; visibility: hidden;}
 .product__hidden_menu span{display:inline-block; width:50px; height:50px; background: white; border-radius: 100%;
 							position: relative; border: 1px solid black; margin:0 10px; }
@@ -41,12 +42,10 @@ h2{text-align: center; font-weight: bold; margin-top:100px}
 </style>
 
 <%
-String subject = request.getParameter("subject");
-if (subject == null) subject = "1";
 ProductDAO productDAO = ProductDAO.getInstance();
 List<ProductDTO> mPList1 = productDAO.getSpecialProductsList("1", 1, 8);
 List<ProductDTO> mPList2 = productDAO.getSpecialProductsList("2", 1, 8);
-
+DecimalFormat formatter = new DecimalFormat("###,###");
 
 %> 
 
@@ -112,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 <div id="container">
-	<h2> 스낵킹 최고 인기상품 </h2>
+	<h2>최고 인기상품</h2> 
 	<table class="main_table">
 		<tr>
 			<% int cnt = 1;
@@ -120,6 +119,13 @@ document.addEventListener("DOMContentLoaded", function(){
 			<td width="25%"> 
 				<div class="product_img_box" name="product_img_box">
 					<a href="shoppingAll.jsp?code=4&product_id=<%=list1.getProduct_id()%>">
+						<%if(cnt==1){%>
+						<img class="medal" src="../../icons/gold-medal.png" width="48px">
+						<%}else if(cnt==2){%>
+						<img class="medal" src="../../icons/silver-medal.png" width="48px">
+						<%}else if(cnt==3){%>
+						<img class="medal" src="../../icons/bronze-medal.png" width="48px">
+						<%} %>
 						<img  id="product_img" src="/images_yhmall/<%=list1.getProduct_image()%>" width="200px" height="200px"/> 
 					</a>
 					<div class="product__hidden_menu">
@@ -131,10 +137,10 @@ document.addEventListener("DOMContentLoaded", function(){
 				<br>
 				<p><a href="shoppingAll.jsp?code=4&product_id=<%=list1.getProduct_id()%>"><%=list1.getProduct_name()%></a></p>
 				<% if(list1.getProduct_price() == list1.getProduct_sale_price()){%>
-					<span class="sale_price" style="color:black;">\<%=list1.getProduct_sale_price()%></span>
+					<span class="sale_price" style="color:black;"><%=formatter.format(list1.getProduct_sale_price())%></span>
 				<%}else{%>
-					<span class="price" style="color:#aaa;">\<%=list1.getProduct_price()%></span>
-					<span class="sale_price">\<%=list1.getProduct_sale_price()%></span>
+					<span class="price" style="color:#aaa;"><%=formatter.format(list1.getProduct_price())%></span>&nbsp;
+					<span class="sale_price"><%=formatter.format(list1.getProduct_sale_price())%></span>
 				<%}
 				if(cnt == 4){
 					%></tr><tr><%
@@ -146,14 +152,20 @@ document.addEventListener("DOMContentLoaded", function(){
 		</tr>
 	</table>
 	
-	<h2> 스낵킹  최고 할인상품</h2>
+	<h2>최고 할인상품</h2> 
 	<table class="main_table">
 		<tr>
 			<% cnt = 1;
 			for(ProductDTO list2 : mPList2){ %>
 			<td width="25%"> 
 				<div class="product_img_box" name="product_img_box">
-					<a href="shoppingAll.jsp?code=4&product_id=<%=list2.getProduct_id()%>">
+					<a href="shoppingAll.jsp?code=4&product_id=<%=list2.getProduct_id()%>"><%if(cnt==1){%>
+						<img class="medal" src="../../icons/gold-medal.png" width="48px">
+						<%}else if(cnt==2){%>
+						<img class="medal" src="../../icons/silver-medal.png" width="48px">
+						<%}else if(cnt==3){%>
+						<img class="medal" src="../../icons/bronze-medal.png" width="48px">
+						<%} %>
 						<img  id="product_img" src="/images_yhmall/<%=list2.getProduct_image()%>" width="200px" height="200px"/> 
 					</a>
 					<div class="product__hidden_menu">
@@ -164,10 +176,10 @@ document.addEventListener("DOMContentLoaded", function(){
 				</div>
 				<p><a href="shoppingAll.jsp?code=4&product_id=<%=list2.getProduct_id()%>"><%=list2.getProduct_name()%></a></p>
 				<% if(list2.getProduct_price() == list2.getProduct_sale_price()){%>
-					<span class="sale_price" style="color:black;">\<%=list2.getProduct_sale_price()%></span>
+					<span class="sale_price" style="color:black;"><%=formatter.format(list2.getProduct_sale_price())%></span>
 				<%}else{%>
-					<span class="price" style="color:#aaa;">\<%=list2.getProduct_price()%></span>
-					<span class="sale_price">\<%=list2.getProduct_sale_price()%></span>
+					<span class="price" style="color:#aaa;"><%=formatter.format(list2.getProduct_price())%></span>&nbsp;
+					<span class="sale_price"><%=formatter.format(list2.getProduct_sale_price())%></span>
 				<%}
 				if(cnt == 4){
 					%></tr><tr><%

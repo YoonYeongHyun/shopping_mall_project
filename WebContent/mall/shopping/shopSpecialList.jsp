@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function(){
 				<%if((rootCnt%5)==0 && (rootCnt != 0))%></tr><tr>
 				<td width="20%"> 
 				<div class="product_img_box" name="product_img_box">
-					<a href="shoppingAll.jsp?code=4&product_id=<%=list1.getProduct_id()%>">
+					<a href="../shoppingAll.jsp?code=4&product_id=<%=list1.getProduct_id()%>">
 						<img  id="product_img" src="/images_yhmall/<%=list1.getProduct_image()%>" width="200px" height="200px"/> 
 					</a>
 					<div class="product__hidden_menu">
@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function(){
 				</div>
 				<br>
 				<div id="product_info">
-				<p><a href="shoppingAll.jsp?code=4&product_id=<%=list1.getProduct_id() %>"><%=list1.getProduct_name()%></a></p>
+				<p><a href="../shoppingAll.jsp?code=4&product_id=<%=list1.getProduct_id() %>"><%=list1.getProduct_name()%></a></p>
 				<% if(list1.getProduct_price() == list1.getProduct_sale_price()){%>
 					<span class="sale_price" style="color:black;">\<%=list1.getProduct_sale_price()%></span>
 				<%}else{%>
@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			
 			//시작페이지 설정
 			int startPage = 1;
-			if(currentPage % 10 != 0) startPage = (currentPage/10) * 10 +1;
+			if(currentPage % 10 != 0) startPage = (currentPage/20) * 10 +1;
 			else startPage = (currentPage/10 -1) * 10 +1;
 			
 			//끝페이지 설정
