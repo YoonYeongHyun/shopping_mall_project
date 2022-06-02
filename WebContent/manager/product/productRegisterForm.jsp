@@ -149,8 +149,18 @@
 					<td><textarea rows="10" cols="60" name="product_content" ></textarea></td>
 				</tr>
 				<tr>
-					<th>이미지</th>
+					<th>썸네일 이미지</th>
 					<td><input type="file" name="product_image" ></td>
+				</tr>
+				<tr>
+					<th>콘텐츠 이미지</th>
+					<td>
+						<input type="file" name="product_content_image1" ><br><br>
+						<input type="file" name="product_content_image2" ><br><br>
+						<input type="file" name="product_content_image3" ><br><br>
+						<input type="file" name="product_content_image4" ><br><br>
+						<input type="file" name="product_content_image5" >
+					</td>
 				</tr>
 			</table>
 			<div class="form_btns">

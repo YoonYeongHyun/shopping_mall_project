@@ -19,7 +19,6 @@ li{float: left;}
 </head>
 
 <% 
-request.setCharacterEncoding("UTF-8");
 //페이지 관련 파라미터
 String code = request.getParameter("code");
 if(code==null) code="1";
@@ -38,9 +37,6 @@ String purchase_amount = request.getParameter("purchase_amount");
 String memberId = memberId = (String) session.getAttribute("memberId");
 if (memberId == null) { //세션이 null인 경우
 memberId = "";
-
-
-
 }
 %>
 <body>
@@ -81,6 +77,14 @@ memberId = "";
 	<jsp:include page="shopOrder.jsp">
 	<jsp:param name="category" value="<%=category%>"/>
 	<jsp:param name="search" value="<%=search%>"/>
+	<jsp:param name="product_id" value="<%=product_id%>"/>
+	</jsp:include>
+	<br>
+	<%}else if(code.equals("6")){%>
+	<jsp:include page="shopCartList.jsp"></jsp:include>
+	<br>
+	<%}else if(code.equals("7")){%>
+	<jsp:include page="shopReviewForm.jsp">
 	<jsp:param name="product_id" value="<%=product_id%>"/>
 	</jsp:include>
 	<br>

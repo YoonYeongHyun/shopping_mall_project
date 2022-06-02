@@ -17,6 +17,7 @@ public class ProductDTO {
 	private Timestamp product_expiry_date;
 	private String product_image;
 	private String product_content;
+	private String product_content_image;
 	private Timestamp reg_date;
 
 	public int getProduct_id() {
@@ -65,6 +66,10 @@ public class ProductDTO {
 
 	public String getProduct_content() {
 		return product_content;
+	}
+
+	public String getProduct_content_image() {
+		return product_content_image;
 	}
 
 	public Timestamp getReg_date() {
@@ -119,6 +124,10 @@ public class ProductDTO {
 		this.product_content = product_content;
 	}
 
+	public void setProduct_content_image(String product_content_image) {
+		this.product_content_image = product_content_image;
+	}
+
 	public void setReg_date(Timestamp reg_date) {
 		this.reg_date = reg_date;
 	}
@@ -129,7 +138,7 @@ public class ProductDTO {
 				+ product_name + ", product_price=" + product_price + ", discount_rate=" + discount_rate
 				+ ", product_sale_price=" + product_sale_price + ", product_qty=" + product_qty + ", product_sales="
 				+ product_sales + ", product_brand=" + product_brand + ", product_expiry_date=" + product_expiry_date
-				+ ", product_image=" + product_image + ", product_content=" + product_content + ", reg_date=" + reg_date
-				+ "]";
+				+ ", product_image=" + product_image + ", product_content=" + product_content
+				+ ", product_content_image=" + product_content_image + ", reg_date=" + reg_date + "]";
 	}
 }

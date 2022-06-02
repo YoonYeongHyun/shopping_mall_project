@@ -28,13 +28,13 @@ public class ProductDAO {
 	public int insertProduct(ProductDTO product, Timestamp Product_expiry_date) {
 		
 		String sql1 = "insert into product(product_kind, product_name, product_price, discount_rate, product_sale_price, product_qty,"
-				+ "product_brand, product_expiry_date, product_image, product_content) values(?, ?, ?, ?, ?, ?, ?, ?, ? ,?)";
+				+ "product_brand, product_expiry_date, product_image, product_content, product_content_image) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		float product_price = (float)product.getProduct_price();
 		int product_sale_price = product.getProduct_sale_price();
 		int discount_rate = 100 - Math.round((product_sale_price/product_price)*100);
 		int result = 1;
-				
+		
 		try {
 			conn = JDBCUtil.getConnection();
 			pstmt = conn.prepareStatement(sql1);
@@ -51,6 +51,7 @@ public class ProductDAO {
 			pstmt.setTimestamp(8, Product_expiry_date);
 			pstmt.setString(9, product.getProduct_image());
 			pstmt.setString(10, product.getProduct_content());
+			pstmt.setString(11, product.getProduct_content_image());
 			pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();

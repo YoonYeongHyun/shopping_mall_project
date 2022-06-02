@@ -123,9 +123,21 @@ document.addEventListener("DOMContentLoaded", function(){
 		</div>
 		<div id="header_btns">
 			<ul>
-				<li><a><img src="../../icons/main_heart.png"></a></li>
-				<li><a><img src="../../icons/main_cart.png"></a></li>
-				<li><a><img src="../../icons/main_login.png"></a></li>
+				<li>
+					<a>
+						<img src="../../icons/main_heart.png">
+					</a>
+				</li>
+				<li>
+					<a href="../shopping/shoppingAll.jsp?code=6">
+						<img src="../../icons/main_cart.png">
+					</a>
+				</li>
+				<li>
+					<a>
+						<img src="../../icons/main_login.png">
+					</a>
+				</li>
 			</ul>
 		</div>
 	</div>

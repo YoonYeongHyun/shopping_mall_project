@@ -19,20 +19,28 @@
 	String realFolder = "c:/images_yhmall";
 	int maxSize = 1024 * 1024 * 5 ;
 	String encType = "utf-8";
-	String fileName = "";
+	
 	MultipartRequest multi = null;
+	String mainFileName = "";
+	String fileName[] = {"","","","",""};
+	
 	
 	try{
 		multi = new MultipartRequest(request, realFolder, maxSize, encType, new DefaultFileRenamePolicy());
 		Enumeration<?> files = multi.getFileNames();
-		
 		while(files.hasMoreElements()){
 			String name = (String)files.nextElement();
-			fileName = multi.getFilesystemName(name);
+			if(name.equals("product_image")) mainFileName = multi.getFilesystemName(name);
+			else if(name.equals("product_content_image1")) fileName[0] = multi.getFilesystemName(name);
+			else if(name.equals("product_content_image2")) fileName[1] = multi.getFilesystemName(name);
+			else if(name.equals("product_content_image3")) fileName[2] = multi.getFilesystemName(name);
+			else if(name.equals("product_content_image4")) fileName[3] = multi.getFilesystemName(name);
+			else if(name.equals("product_content_image5")) fileName[4] = multi.getFilesystemName(name);
 		}
 	}catch(Exception e){
 		e.printStackTrace();
 	}
+	String fileNames = String.join(",", fileName);
 	
 	//문자열을 타임스탬프변수로 변환
 	String product_expiry_date1 = (multi.getParameter("product_expiry_date"));
@@ -57,9 +65,9 @@
 	product.setProduct_qty(product_qty);
 	product.setProduct_brand(product_brand);
 	product.setProduct_content(product_content);
-	if(fileName == null) product.setProduct_image("nothing.jpg");
-	else product.setProduct_image(fileName);
-	
+	if(mainFileName == null) product.setProduct_image("nothing.jpg");
+	else product.setProduct_image(mainFileName);
+	product.setProduct_content_image(fileNames);
 	
 	int result = productDAO.insertProduct(product, product_expiry_date); 
 	
