@@ -175,6 +175,7 @@ $(document).ready(function(){
 	    e.preventDefault()
 	    <%if(memberId == null){%>
 			alert("로그인 하세요");
+			location="../member/memberAll.jsp?"
 	    <%}else{ %>
 	    $.ajax({
 	        type:'post',

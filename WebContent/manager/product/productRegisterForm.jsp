@@ -141,10 +141,6 @@
 					<td><input type="text" class="short_input" name="product_brand" ></td>
 				</tr>
 				<tr>
-					<th>판매만료 날짜</th>
-					<td><input type="date" name="product_expiry_date" id="product_expiry_date"></td>
-				</tr>
-				<tr>
 					<th>내용</th>
 					<td><textarea rows="10" cols="60" name="product_content" ></textarea></td>
 				</tr>

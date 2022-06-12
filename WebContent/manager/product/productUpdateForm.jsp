@@ -59,8 +59,6 @@
 	int product_id = Integer.parseInt(request.getParameter("product_id"));
 	ProductDAO productDAO = ProductDAO.getInstance();
 	ProductDTO product = productDAO.getProduct(product_id);
-	Timestamp ped1 = product.getProduct_expiry_date();
-	String ped2 = (ped1.toString()).substring(0, 10);
 %>
 <script>
 document.addEventListener("DOMContentLoaded", function(){
@@ -138,10 +136,6 @@ document.addEventListener("DOMContentLoaded", function(){
 				<tr>
 					<th>제조사</th>
 					<td><input type="text" class="short_input" name="product_brand" value="<%=product.getProduct_brand() %>"></td>
-				</tr>
-				<tr>
-					<th>판매만료 날짜</th>
-					<td><input type="date" name="product_expiry_date" id="product_expiry_date" value="<%=ped2 %>"></td>
 				</tr>
 				<tr>
 					<th>내용</th>

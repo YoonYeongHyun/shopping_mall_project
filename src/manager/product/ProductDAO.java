@@ -25,10 +25,10 @@ public class ProductDAO {
 	private ResultSet rs = null;
 	
 	//상품등록 메서드 
-	public int insertProduct(ProductDTO product, Timestamp Product_expiry_date) {
+	public int insertProduct(ProductDTO product) {
 		
 		String sql1 = "insert into product(product_kind, product_name, product_price, discount_rate, product_sale_price, product_qty,"
-				+ "product_brand, product_expiry_date, product_image, product_content, product_content_image) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ "product_brand, product_image, product_content, product_content_image) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		float product_price = (float)product.getProduct_price();
 		int product_sale_price = product.getProduct_sale_price();
@@ -48,10 +48,9 @@ public class ProductDAO {
 			pstmt.setInt(5, product.getProduct_sale_price());
 			pstmt.setInt(6, product.getProduct_qty());
 			pstmt.setString(7, product.getProduct_brand());
-			pstmt.setTimestamp(8, Product_expiry_date);
-			pstmt.setString(9, product.getProduct_image());
-			pstmt.setString(10, product.getProduct_content());
-			pstmt.setString(11, product.getProduct_content_image());
+			pstmt.setString(8, product.getProduct_image());
+			pstmt.setString(9, product.getProduct_content());
+			pstmt.setString(10, product.getProduct_content_image());
 			pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -64,10 +63,10 @@ public class ProductDAO {
 	
 
 	//상품수정 메서드 
-	public int updateProduct(ProductDTO product, Timestamp Product_expiry_date) {
+	public int updateProduct(ProductDTO product) {
 		
 		String sql1 = "update product set product_kind = ?, product_name = ?, product_price = ?, discount_rate = ?, product_sale_price = ?, "
-				+ "product_qty = ?, product_brand = ?, product_expiry_date = ?, product_image = ?, product_content = ? where Product_id = ?";
+				+ "product_qty = ?, product_brand = ?, product_image = ?, product_content = ? where Product_id = ?";
 		float product_price = (float)product.getProduct_price();
 		int product_sale_price = product.getProduct_sale_price();
 		int discount_rate = 100 - Math.round((product_sale_price/product_price)*100);
@@ -85,10 +84,9 @@ public class ProductDAO {
 			pstmt.setInt(5, product.getProduct_sale_price());
 			pstmt.setInt(6, product.getProduct_qty());
 			pstmt.setString(7, product.getProduct_brand());
-			pstmt.setTimestamp(8, Product_expiry_date);
-			pstmt.setString(9, product.getProduct_image());
-			pstmt.setString(10, product.getProduct_content());
-			pstmt.setInt(11, product.getProduct_id());
+			pstmt.setString(8, product.getProduct_image());
+			pstmt.setString(9, product.getProduct_content());
+			pstmt.setInt(10, product.getProduct_id());
 			pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -122,7 +120,6 @@ public class ProductDAO {
 				product.setProduct_qty(rs.getInt("product_qty"));
 				product.setProduct_sales(rs.getInt("product_sales"));
 				product.setProduct_brand(rs.getString("product_brand"));
-				product.setProduct_expiry_date(rs.getTimestamp("product_expiry_date"));
 				product.setProduct_image(rs.getString("product_image"));
 				product.setReg_date(rs.getTimestamp("reg_date"));
 				productList.add(product);
@@ -210,14 +207,12 @@ public class ProductDAO {
 				product.setProduct_qty(rs.getInt("product_qty"));
 				product.setProduct_sales(rs.getInt("product_sales"));
 				product.setProduct_brand(rs.getString("product_brand"));
-				product.setProduct_expiry_date(rs.getTimestamp("product_expiry_date"));
 				product.setProduct_image(rs.getString("product_image"));
 				product.setReg_date(rs.getTimestamp("reg_date"));
 				productList.add(product);
 			}
 		
 		} catch (Exception e) {
-			System.out.println("getProductsCategoryList: " + e.getMessage());
 			e.printStackTrace();
 		} finally {
 			JDBCUtil.close(conn, pstmt, rs);
@@ -357,7 +352,6 @@ public class ProductDAO {
 				product.setProduct_qty(rs.getInt("product_qty"));
 				product.setProduct_sales(rs.getInt("product_sales"));
 				product.setProduct_brand(rs.getString("product_brand"));
-				product.setProduct_expiry_date(rs.getTimestamp("product_expiry_date"));
 				product.setProduct_image(rs.getString("product_image"));
 				product.setReg_date(rs.getTimestamp("reg_date"));
 				productList.add(product);
@@ -469,7 +463,6 @@ public class ProductDAO {
 				product.setProduct_qty(rs.getInt("product_qty"));
 				product.setProduct_sales(rs.getInt("product_sales"));
 				product.setProduct_brand(rs.getString("product_brand"));
-				product.setProduct_expiry_date(rs.getTimestamp("product_expiry_date"));
 				product.setProduct_image(rs.getString("product_image"));
 				product.setProduct_content(rs.getString("product_content"));
 				product.setReg_date(rs.getTimestamp("reg_date"));
@@ -509,7 +502,6 @@ public class ProductDAO {
 				product.setProduct_qty(rs.getInt("product_qty"));
 				product.setProduct_sales(rs.getInt("product_sales"));
 				product.setProduct_brand(rs.getString("product_brand"));
-				product.setProduct_expiry_date(rs.getTimestamp("product_expiry_date"));
 				product.setProduct_image(rs.getString("product_image"));
 				product.setReg_date(rs.getTimestamp("reg_date"));
 				productList.add(product);

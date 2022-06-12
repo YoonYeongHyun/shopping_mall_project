@@ -13,6 +13,8 @@
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+
 <style>
 .container{width: 1200px; height:auto; margin: 0 auto;}
 
@@ -181,6 +183,34 @@ document.addEventListener("DOMContentLoaded", function(){
 	}));
 	
 })
+
+$(document).ready(function(){
+	$('#c_btn').on("click", function(e){
+		let id = '<%=memberId%>';
+	    let product_id = '<%=product_id%>';
+	    let product_amount = $('#purchase_amount').val();
+	    e.preventDefault()
+	    <%if(memberId == null){%>
+			alert("로그인 하세요");
+			location="../member/memberAll.jsp?"
+	    <%}else{ %>
+	    $.ajax({
+	        type:'post',
+	        async:false,
+	        url:'shopCartInsert.jsp',
+	        dataType:'text',
+	        data:{id:id,product_id:product_id, product_amount:product_amount},
+	        success:function(data, textStatus) {
+	        	alert("장바구니에 담겼습니다.");
+	        },
+	        error:function (data, textStatus) {
+	            alert("오류가 발생하였습니다.")
+	        }
+	    })
+	    <%}%>
+	})
+});
+
 //스크롤에따른 버튼색 변화
 window.addEventListener("scroll", (event) => { 
 	
@@ -208,6 +238,7 @@ window.addEventListener("scroll", (event) => {
 		middle_menu3.className = 'se_menu';
 	}
 });
+
 </script>
 <div class="container">
 	<div id="puchase_contents">

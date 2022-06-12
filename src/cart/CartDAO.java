@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import mall.member.MemberDTO;
 import manager.product.ProductDTO;
 import review.ReviewDTO;
 import util.JDBCUtil;
@@ -27,6 +28,8 @@ public class CartDAO {
 	public int insertCart(String id, int product_id, int product_amount) {
 		String sql1 = "select count(*) from cart where id = ? and product_id = ?";
 		String sql2 = "insert into cart(id, product_id, product_amount) values(?, ?, ?)";
+		String sql3 = "update cart set product_amount = ? where product_id = ? and id =?";
+		
 		int result = -1;
 		int cnt = 0;
 		try {
@@ -45,6 +48,21 @@ public class CartDAO {
 						pstmt.setString(1, id);
 						pstmt.setInt(2, product_id);
 						pstmt.setInt(3, product_amount);
+						pstmt.executeUpdate();
+					}catch (Exception e) {
+						e.printStackTrace();
+						result = 0;
+					} finally {
+						JDBCUtil.close(conn, pstmt);
+					}
+				}else {
+					result = 1;
+					try {
+						conn = JDBCUtil.getConnection();
+						pstmt = conn.prepareStatement(sql3);
+						pstmt.setInt(1, product_amount + cnt);
+						pstmt.setInt(2, product_id);
+						pstmt.setString(3, id);
 						pstmt.executeUpdate();
 					}catch (Exception e) {
 						e.printStackTrace();
@@ -108,5 +126,40 @@ public class CartDAO {
 		} finally {
 			JDBCUtil.close(conn, pstmt);
 		}
+	}
+	
+
+	public void deleteCart(String id, int product_id) throws Exception {
+		String sql = "delete from cart where id = ? and product_id = ?";
+		try {
+			conn = JDBCUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			pstmt.setInt(2, product_id);
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.close(conn, pstmt);
+		}
+	}
+	
+	public int getCartCount(String id) {
+		String sql = "select count(*) from cart where id = ?";
+		int cnt = 0;
+		try {
+			conn = JDBCUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			rs.next();
+			cnt = rs.getInt(1);
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.close(conn, pstmt, rs);
+		}
+		return cnt;
 	}
 }

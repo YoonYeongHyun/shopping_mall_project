@@ -19,13 +19,14 @@
 	
 	%>
 	<script>
-	<%if(cnt > 0 ){// 데이터 삽입 성공 %>
-		alert("회원수정에 성공하였습니다");
-	<%} else{// 데이터 삽입 실패%>
-		alert("회원수정에 실패하였습니다");
+	<%if(cnt > 0 ){ %>
+		alert("성공하였습니다");
+	<%} else{%>
+		alert("실패하였습니다");
+		history.back();
 	<%}%>
 
-	history.back();
+	
 	</script>
 </body>
 </html>

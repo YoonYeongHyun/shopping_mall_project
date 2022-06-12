@@ -51,12 +51,6 @@
 	String product_content = multi.getParameter("product_content");
 	String pre_product_image = multi.getParameter("pre_product_image");
 	
-	//문자열을 타임스탬프변수로 변환
-		String product_expiry_date1 = (multi.getParameter("product_expiry_date"));
-		String product_expiry_date2 = " 00:00:00";
-		product_expiry_date1 += product_expiry_date2;
-		Timestamp product_expiry_date = Timestamp.valueOf(product_expiry_date1);
-		
 	ProductDTO product = new ProductDTO();
 	product.setProduct_id(product_id);
 	product.setProduct_kind(product_kind);
@@ -70,7 +64,7 @@
 	else product.setProduct_image(fileName);
 	
 	
-	int result = productDAO.updateProduct(product, product_expiry_date); 
+	int result = productDAO.updateProduct(product); 
 	
 	if(result == 1){%>
 		<script> 

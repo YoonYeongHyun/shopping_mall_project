@@ -62,10 +62,10 @@ String search = request.getParameter("search");
 if (search == null) search = "0";
 
 String pageNum = request.getParameter("pageNum");
-
+if (pageNum == null) pageNum = "1";
 ProductDAO productDAO = ProductDAO.getInstance();
 int cnt = productDAO.getProductCount(category, search);
-if (pageNum == null) pageNum = "1";
+
 int currentPage = Integer.parseInt(pageNum);    //현재페이지
 int pageSize = 10;
 int startRow = (currentPage -1) * pageSize + 1; //현재페이지의 첫행
@@ -99,7 +99,7 @@ List<ProductDTO> productList = productDAO.getProductsCategoryList(category, sear
 
 		update_btns.forEach(element => element.addEventListener("click", function(e){
 			let l_num = e.target.previousSibling.previousSibling.value;
-			location="productUpdateForm.jsp?product_id="+ l_num + "&pageNum=<%=pageNum%>&category=<%=category%>&search=<%=search%>";
+		/location="productUpdateForm.jsp?product_id="+ l_num + "&pageNum=<%=pageNum%>&category=<%=category%>&search=<%=search%>";
 			function reloadDivArea() {
 			    $('#list_table').load(location.href+' #list_table');
 			}

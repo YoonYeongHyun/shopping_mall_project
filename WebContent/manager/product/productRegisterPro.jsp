@@ -42,12 +42,6 @@
 	}
 	String fileNames = String.join(",", fileName);
 	
-	//문자열을 타임스탬프변수로 변환
-	String product_expiry_date1 = (multi.getParameter("product_expiry_date"));
-	String product_expiry_date2 = " 00:00:00";
-	product_expiry_date1 += product_expiry_date2;
-	Timestamp product_expiry_date = Timestamp.valueOf(product_expiry_date1);
-	
 	ProductDAO productDAO = ProductDAO.getInstance();
 	String product_kind = multi.getParameter("product_kind");
 	String product_name = multi.getParameter("product_name");
@@ -69,7 +63,7 @@
 	else product.setProduct_image(mainFileName);
 	product.setProduct_content_image(fileNames);
 	
-	int result = productDAO.insertProduct(product, product_expiry_date); 
+	int result = productDAO.insertProduct(product); 
 	
 	if(result == 1){%>
 		<script> 

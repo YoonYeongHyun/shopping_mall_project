@@ -11,8 +11,8 @@ public class MemberDAO {
 
 	// singleton Pattern(싱글톤 패턴) - 클래스의 인스턴스를 하나만 생성하는 방법
 	//클래스 내부에서만 생성
-	private MemberDAO() { }
-	
+
+	private MemberDAO() {}
 	
 	private static MemberDAO memberDAO = new MemberDAO();
 	

@@ -14,7 +14,6 @@ public class ProductDTO {
 	private int product_qty;
 	private int product_sales;
 	private String product_brand;
-	private Timestamp product_expiry_date;
 	private String product_image;
 	private String product_content;
 	private String product_content_image;
@@ -54,10 +53,6 @@ public class ProductDTO {
 
 	public String getProduct_brand() {
 		return product_brand;
-	}
-
-	public Timestamp getProduct_expiry_date() {
-		return product_expiry_date;
 	}
 
 	public String getProduct_image() {
@@ -112,10 +107,6 @@ public class ProductDTO {
 		this.product_brand = product_brand;
 	}
 
-	public void setProduct_expiry_date(Timestamp product_expiry_date) {
-		this.product_expiry_date = product_expiry_date;
-	}
-
 	public void setProduct_image(String product_image) {
 		this.product_image = product_image;
 	}
@@ -137,7 +128,7 @@ public class ProductDTO {
 		return "ProductDTO [product_id=" + product_id + ", product_kind=" + product_kind + ", product_name="
 				+ product_name + ", product_price=" + product_price + ", discount_rate=" + discount_rate
 				+ ", product_sale_price=" + product_sale_price + ", product_qty=" + product_qty + ", product_sales="
-				+ product_sales + ", product_brand=" + product_brand + ", product_expiry_date=" + product_expiry_date
+				+ product_sales + ", product_brand=" + product_brand
 				+ ", product_image=" + product_image + ", product_content=" + product_content
 				+ ", product_content_image=" + product_content_image + ", reg_date=" + reg_date + "]";
 	}
